@@ -5,7 +5,64 @@ import base from "./Airtable"
 import { FaVoteYea } from "react-icons/fa"
 
 const Survey = () => {
-  return <h2>survey component</h2>
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const getRecords = async () => {
+    const records = await base("Survey")
+      .select({})
+      .firstPage()
+      .catch(error => console.log(error))
+    const newItems = records.map(record => {
+      const { id, fields } = record
+      return { id, fields }
+    })
+    setItems(newItems)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    getRecords()
+  }, [])
+
+  return (
+    <Wrapper className="section">
+      <div className="container">
+        <Title title="survey"></Title>
+        <h3>Most important room in the house?</h3>
+        {loading ? (
+          <h3>loading...</h3>
+        ) : (
+          <ul>
+            {items.map(item => {
+              const {
+                id,
+                fields: { name, votes },
+              } = item
+              return (
+                <li key={id}>
+                  <div className="key">
+                    {name.toUpperCase().substring(0, 2)}
+                  </div>
+                  <div>
+                    <h4>{name}</h4>
+                    <p>{votes} votes</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      console.log("You clicked me!")
+                    }}
+                  >
+                    <FaVoteYea />
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
+    </Wrapper>
+  )
 }
 
 const Wrapper = styled.section`
