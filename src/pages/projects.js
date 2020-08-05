@@ -12,6 +12,7 @@ const ProjectsPage = ({ data }) => {
     <Wrapper>
       <Layout>
         <Projects title="Our projects" projects={projects} page />
+        <Algolia />
       </Layout>
     </Wrapper>
   )
